@@ -1,0 +1,10 @@
+version: '3.1'
+services:
+  db:
+      ports:
+      - "5433:5432"
+  mailhog:
+    image: mailhog/mailhog
+    ports:
+      - 1029:1025
+      - 8029:8025

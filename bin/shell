@@ -1,0 +1,4 @@
+#!/bin/bash
+DB=${1:-test}
+script='odoo shell -c /etc/odoo/odoo.conf --dev=all --db_host=db -d $1 -r odoo -w $(cat $PASSWORD_FILE)'
+docker compose exec web bash -c "$script" -- "$DB"
