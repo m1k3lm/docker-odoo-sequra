@@ -1,0 +1,7 @@
+#!/bin/bash
+DB=${1:-test}
+MODULE=${2:-payment_sequra}
+
+script='odoo -c /etc/odoo/odoo.conf --dev=all --db_host=db -d $1 -r odoo -w $(cat $PASSWORD_FILE) -u $2 --stop-after-init'
+echo $script
+docker compose exec web bash -c "$script" -- "$DB" "$MODULE"
