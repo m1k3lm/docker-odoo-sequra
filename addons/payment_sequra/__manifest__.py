@@ -2,7 +2,7 @@
 {
     'name': "payment_sequra",
 
-    'summary': "Allow payments with Sequra payment methods,
+    'summary': "Allow payments with Sequra payment methods",
 
     'description': """
 Allow payments with Sequra payment methods.
@@ -11,7 +11,7 @@ Allow payments with Sequra payment methods.
     'author': "seQura",
     'website': "https://sequra.es",
 
-    'category': 'Payments',
+    'category': 'Accounting/Payment Providers',
     'version': '0.1',
 
     # any module necessary for this one to work correctly
@@ -19,13 +19,12 @@ Allow payments with Sequra payment methods.
 
     # always loaded
     'data': [
-        # 'security/ir.model.access.csv',
-        'views/views.xml',
-        'views/templates.xml',
+        'views/payment_sequra_templates.xml',
+        'views/payment_provider_views.xml',
+        'data/payment_method_data.xml',
+        'data/payment_provider_data.xml',
     ],
-    # only loaded in demonstration mode
-    'demo': [
-        'demo/demo.xml',
-    ],
+    'post_init_hook': 'post_init_hook',
+    'uninstall_hook': 'uninstall_hook',
 }
 
