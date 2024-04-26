@@ -1,5 +1,9 @@
 version: '3.1'
 services:
+  web:
+    stdin_open: true
+    tty: true
+    command: --dev=all
   db:
       ports:
       - "5433:5432"
@@ -8,3 +12,4 @@ services:
     ports:
       - 1029:1025
       - 8029:8025
+      

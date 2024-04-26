@@ -2,11 +2,12 @@
 
 import logging
 import pprint
+import base64
 
 import requests
 from werkzeug import urls
 
-from odoo import _, fields, models, service
+from odoo import _, api, fields, models, service
 from odoo.exceptions import ValidationError
 
 from odoo.addons.payment_sequra import const
@@ -27,7 +28,7 @@ class PaymentProvider(models.Model):
     )
     sequra_pass = fields.Char(
         string="API Password",
-        help="The Test or Live API password depending on the configuration of the provider",
+        help="The Test or Live API password depending on the configuration of the sequra_user",
         required_if_provider="sequra", groups="base.group_system"
     )
     sequra_merchant = fields.Char(
@@ -35,6 +36,22 @@ class PaymentProvider(models.Model):
         help="The merchant reference",
         required_if_provider="sequra", groups="base.group_system"
     )
+
+    sequra_endpoint = fields.Char(
+        string="seQura Endpoint",
+        compute="_compute_sequra_endpoint",
+        help="The endpoint of the seQura API",
+        store=False
+    )
+
+
+    @api.depends('state')
+    def _compute_sequra_endpoint(self):
+        for record in self:
+            if record.state == 'enabled':
+                record.sequra_endpoint = "https://live.sequrapi.com"
+            else:
+                record.sequra_endpoint = "https://sandbox.sequrapi.com"
 
     #=== BUSINESS METHODS ===#
 
@@ -47,8 +64,8 @@ class PaymentProvider(models.Model):
             )
         return supported_currencies
 
-    def _sequra_make_request(self, endpoint, data=None, method='POST'):
-        """ Make a request at mollie endpoint.
+    def _sequra_make_request(self, endpoint, data=None, params=None, method='POST'):
+        """ Make a request at sequra endpoint.
 
         Note: self.ensure_one()
 
@@ -60,20 +77,19 @@ class PaymentProvider(models.Model):
         :raise: ValidationError if an HTTP error occurs
         """
         self.ensure_one()
-        url = urls.url_join('https://api.mollie.com/', endpoint)
+        url = urls.url_join(self.sequra_endpoint, endpoint)
 
         odoo_version = service.common.exp_version()['server_version']
-        module_version = self.env.ref('base.module_payment_mollie').installed_version
+        module_version = self.env.ref('base.module_payment_sequra').installed_version
         headers = {
-            "Accept": "application/json",
-            "Authorization": f'Bearer {self.mollie_api_key}',
-            "Content-Type": "application/json",
-            # See https://docs.mollie.com/integration-partners/user-agent-strings
-            "User-Agent": f'Odoo/{odoo_version} MollieNativeOdoo/{module_version}',
+            "Authorization": 'basic ' + base64.b64encode(f'{self.sequra_user}:{self.sequra_pass}'.encode('utf-8')).decode('utf-8'),
+            "User-Agent": f'Odoo/{odoo_version} seQuraOdoo/{module_version}',
         }
-
+        if method == 'POST':
+            headers['Content-Type'] = 'application/json'
+            headers['Accept'] = 'application/json'
         try:
-            response = requests.request(method, url, json=data, headers=headers, timeout=60)
+            response = requests.request(method, url, json=data, headers=headers, params=params, timeout=60)
             try:
                 response.raise_for_status()
             except requests.exceptions.HTTPError:
@@ -81,14 +97,14 @@ class PaymentProvider(models.Model):
                     "Invalid API request at %s with data:\n%s", url, pprint.pformat(data)
                 )
                 raise ValidationError(
-                    "Mollie: " + _(
-                        "The communication with the API failed. Mollie gave us the following "
-                        "information: %s", response.json().get('detail', '')
+                    "seQura " + _(
+                        "The communication with the API failed. seQura gave us the following "
+                        "information: %s", response.json().get('errors', '') or (url + " " + str(response.status_code))
                     ))
         except (requests.exceptions.ConnectionError, requests.exceptions.Timeout):
             _logger.exception("Unable to reach endpoint at %s", url)
             raise ValidationError(
-                "Mollie: " + _("Could not establish the connection to the API.")
+                "seQura " + _("Could not establish the connection to the API.")
             )
-        return response.json()
+        return response
 

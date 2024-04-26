@@ -6,10 +6,10 @@
         <field name="module_id" ref="base.module_payment_sequra"/>
         <field name="payment_method_ids"
         eval="[Command.set([
-                  ref('payment_sequra.payment_method_pp3'),
+                  ref('payment_method_pp3'),
               ])]"
         />
-        <field name="image_128" type="base64" file="payment_sequra/static/img/icon.png"/>
+        <field name="image_128" type="base64" file="payment_sequra/static/img/sequra-logo.png"/>
         <field name="redirect_form_view_id" ref="redirect_form"/>
     </record>
 </odoo>
