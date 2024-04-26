@@ -237,7 +237,7 @@ class PaymentTransaction(models.Model):
         state = ( payment_status == 'approved' and 'confirmed') or 'on_hold'
         payload = self._sequra_prepare_payment_request_payload(reference, state = state)
         if not payload:
-            return res
+            return
         _logger.info("Send PUT to Update Order:\n%s", pprint.pformat(payload))
         update_order_response = self.provider_id._sequra_make_request(f'/orders/{notification_data.get("order_ref")}', data=payload, method='PUT')
         if payment_status == 'approved' and update_order_response.ok:
