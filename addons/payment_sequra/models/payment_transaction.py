@@ -228,9 +228,14 @@ class PaymentTransaction(models.Model):
         super()._process_notification_data(notification_data)
         if self.provider_code != 'sequra':
             return
+        reference = notification_data.get('order_ref_1')
+        order = self.env['sale.order'].search([('name', '=', reference.split('-')[0])])
+        if notification_data.get('signature') != self._sequra_generate_signature(order):
+            _logger.info("Signature does not match")
+            return
         payment_status = notification_data.get('sq_state')
         state = ( payment_status == 'approved' and 'confirmed') or 'on_hold'
-        payload = self._sequra_prepare_payment_request_payload(notification_data.get('order_ref_1'), state = state)
+        payload = self._sequra_prepare_payment_request_payload(reference, state = state)
         if not payload:
             return res
         _logger.info("Send PUT to Update Order:\n%s", pprint.pformat(payload))
