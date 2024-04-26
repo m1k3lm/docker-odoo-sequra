@@ -24,17 +24,17 @@ class PaymentProvider(models.Model):
     sequra_user = fields.Char(
         string="API Username",
         help="The Test or Live API username depending on the configuration of the provider",
-        required_if_provider="sequra", groups="base.group_system"
+        groups="base.group_system"
     )
     sequra_pass = fields.Char(
         string="API Password",
         help="The Test or Live API password depending on the configuration of the sequra_user",
-        required_if_provider="sequra", groups="base.group_system"
+        groups="base.group_system"
     )
     sequra_merchant = fields.Char(
         string="Merchant ref",
         help="The merchant reference",
-        required_if_provider="sequra", groups="base.group_system"
+        groups="base.group_system"
     )
 
     sequra_endpoint = fields.Char(

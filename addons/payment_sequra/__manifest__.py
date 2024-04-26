@@ -12,7 +12,7 @@ Allow payments with Sequra payment methods.
     'website': "https://sequra.es",
 
     'category': 'Accounting/Payment Providers',
-    'version': '0.1',
+    'version': '1.0',
 
     # any module necessary for this one to work correctly
     'depends': ['payment'],
@@ -20,7 +20,6 @@ Allow payments with Sequra payment methods.
     # always loaded
     'data': [
         'views/payment_sequra_templates.xml',
-        'data/payment_method_data.xml',
         'data/payment_provider_data.xml',
         'views/payment_provider_views.xml',
     ],

@@ -42,7 +42,7 @@ class PaymentTransaction(models.Model):
         self.provider_reference = solicitation_response.headers.get('Location').split('/')[-1] 
         rendering_values = {
             'api_url': solicitation_response.headers.get('Location') + '/embedded_form',
-            'product': self.payment_method_id.code,
+            'product': 'pp3',
         }
         _logger.info("Starting rendering_values:\n%s", pprint.pformat(rendering_values))
         return rendering_values

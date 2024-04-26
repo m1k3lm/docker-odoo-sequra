@@ -7,10 +7,10 @@
         <field name="inherit_id" ref="payment.payment_provider_form"/>
         <field name="arch" type="xml">
             <group name="provider_credentials" position="inside">
-                <group invisible="code != 'sequra'">
-                    <field name="sequra_user" string="API Username" required="code == 'sequra' and state != 'disabled'"/>
-                    <field name="sequra_pass" string="API Password" required="code == 'sequra' and state != 'disabled'" password="True"/>
-                    <field name="sequra_merchant" string="Merchant ref" required="code == 'sequra' and state != 'disabled'" />
+                <group attrs="{'invisible': [('code', '!=', 'sequra')]}">
+                    <field name="sequra_user" string="API Username" attrs="{'required': [('code', '=', 'sequra'), ('state', '!=', 'disabled')]}"/>
+                    <field name="sequra_pass" string="API Password" attrs="{'required': [('code', '=', 'sequra'), ('state', '!=', 'disabled')]}" password="True"/>
+                    <field name="sequra_merchant" string="Merchant ref" attrs="{'required': [('code', '=', 'sequra'), ('state', '!=', 'disabled')]}" />
                 </group>
             </group>
         </field>
