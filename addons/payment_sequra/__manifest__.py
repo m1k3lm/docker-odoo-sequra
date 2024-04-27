@@ -1,23 +1,18 @@
 # -*- coding: utf-8 -*-
 {
     'name': "payment_sequra",
-
     'summary': "Allow payments with Sequra payment methods",
-
+    "version": "17.0.1.0.1",
     'description': """
 Allow payments with Sequra payment methods.
     """,
-
     'author': "seQura",
     'website': "https://sequra.es",
 
     'category': 'Accounting/Payment Providers',
-    'version': '0.1',
-
-    # any module necessary for this one to work correctly
+    'version': '1.0',
     'depends': ['payment'],
 
-    # always loaded
     'data': [
         'views/payment_sequra_templates.xml',
         'data/payment_method_data.xml',
@@ -27,4 +22,3 @@ Allow payments with Sequra payment methods.
     'post_init_hook': 'post_init_hook',
     'uninstall_hook': 'uninstall_hook',
 }
-
